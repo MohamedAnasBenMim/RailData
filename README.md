@@ -2,7 +2,7 @@
 
 **An ELT pipeline that turns railway timetables (GTFS) and realised arrival/departure events into tested punctuality, delay-propagation and cancellation marts, using Python, DuckDB and dbt.**
 
-![CI](https://github.com/MohamedAnasBenMim/raildata/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/MohamedAnasBenMim/RailData/actions/workflows/ci.yml/badge.svg)
 
 > **The data is synthetic.** Open operator APIs and data portals were not reachable from the
 > environment where this was built, so a seeded generator produces a GTFS-style network
