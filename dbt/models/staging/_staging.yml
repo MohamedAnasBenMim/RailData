@@ -1,0 +1,63 @@
+version: 2
+
+models:
+  - name: stg_gtfs__agency
+    columns:
+      - name: agency_id
+        data_tests: [unique, not_null]
+  - name: stg_gtfs__stops
+    columns:
+      - name: stop_id
+        data_tests: [unique, not_null]
+      - name: stop_lat
+        data_tests:
+          - value_between: {arguments: {min_value: -90, max_value: 90}}
+      - name: stop_lon
+        data_tests:
+          - value_between: {arguments: {min_value: -180, max_value: 180}}
+  - name: stg_gtfs__routes
+    columns:
+      - name: route_id
+        data_tests: [unique, not_null]
+      - name: agency_id
+        data_tests:
+          - relationships: {arguments: {to: ref('stg_gtfs__agency'), field: agency_id}}
+  - name: stg_gtfs__trips
+    columns:
+      - name: trip_id
+        data_tests: [unique, not_null]
+      - name: route_id
+        data_tests:
+          - not_null
+          - relationships: {arguments: {to: ref('stg_gtfs__routes'), field: route_id}}
+  - name: stg_gtfs__stop_times
+    data_tests:
+      - unique_combination: {arguments: {columns: [trip_id, stop_sequence]}}
+    columns:
+      - name: trip_id
+        data_tests:
+          - relationships: {arguments: {to: ref('stg_gtfs__trips'), field: trip_id}}
+      - name: stop_id
+        data_tests:
+          - relationships: {arguments: {to: ref('stg_gtfs__stops'), field: stop_id}}
+      - name: arrival_offset_s
+        data_tests: [not_null]
+      - name: departure_offset_s
+        data_tests: [not_null]
+  - name: stg_gtfs__calendar
+    columns:
+      - name: service_id
+        data_tests: [unique, not_null]
+  - name: stg_events
+    description: Raw delivered records, typed. Not deduplicated.
+    columns:
+      - name: event_id
+        data_tests: [not_null]
+      - name: event_type
+        data_tests:
+          - accepted_values: {arguments: {values: ["ARR", "DEP"]}}
+      - name: status
+        data_tests:
+          - accepted_values: {arguments: {values: ["OK", "CANCELLED"]}}
+      - name: recorded_at
+        data_tests: [not_null]

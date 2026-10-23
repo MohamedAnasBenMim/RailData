@@ -1,0 +1,66 @@
+version: 2
+
+models:
+  - name: dim_stops
+    columns:
+      - name: stop_id
+        data_tests: [unique, not_null]
+  - name: dim_routes
+    columns:
+      - name: route_id
+        data_tests: [unique, not_null]
+  - name: fct_stop_events
+    description: Clean stop events (incremental, partitioned by service_date).
+    columns:
+      - name: event_id
+        data_tests: [unique, not_null]
+      - name: stop_id
+        data_tests:
+          - relationships: {arguments: {to: ref('dim_stops'), field: stop_id}}
+      - name: route_id
+        data_tests:
+          - not_null
+          - relationships: {arguments: {to: ref('dim_routes'), field: route_id}}
+      - name: event_type
+        data_tests:
+          - accepted_values: {arguments: {values: ["ARR", "DEP"]}}
+      - name: scheduled_ts
+        data_tests: [not_null]
+      - name: delay_min
+        data_tests:
+          - value_between: {arguments: {min_value: -60, max_value: 360}}
+  - name: fct_trip_runs
+    data_tests:
+      - unique_combination: {arguments: {columns: [service_date, trip_id]}}
+    columns:
+      - name: run_status
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["RAN", "PARTIALLY_CANCELLED", "CANCELLED", "NO_DATA"]
+  - name: mart_punctuality_line_daily
+    data_tests:
+      - unique_combination: {arguments: {columns: [service_date, route_id]}}
+    columns:
+      - name: on_time_pct
+        data_tests:
+          - value_between: {arguments: {min_value: 0, max_value: 100}}
+      - name: cancellation_rate
+        data_tests:
+          - not_null
+          - value_between: {arguments: {min_value: 0, max_value: 1}}
+  - name: mart_punctuality_station
+    columns:
+      - name: stop_id
+        data_tests: [unique, not_null]
+  - name: mart_punctuality_hourly
+    data_tests:
+      - unique_combination: {arguments: {columns: [day_type, scheduled_hour]}}
+    columns:
+      - name: day_type
+        data_tests:
+          - accepted_values: {arguments: {values: ["weekday", "weekend"]}}
+  - name: mart_delay_propagation
+    data_tests:
+      - unique_combination: {arguments: {columns: [route_id, direction_id, stop_sequence]}}

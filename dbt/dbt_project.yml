@@ -1,0 +1,42 @@
+name: raildata
+version: "0.1.0"
+config-version: 2
+profile: raildata
+
+model-paths: ["models"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages", "logs"]
+
+vars:
+  # Processing window for the incremental fact table (ISO dates).
+  # When unset, the whole bronze history is (re)processed.
+  start_date: null
+  end_date: null
+  # Late events can be delivered up to this many days after the service date.
+  lookback_days: 1
+  # A stop event counts as on time when its delay is strictly below this.
+  on_time_threshold_min: 5
+  # Plausibility bounds for a realised delay (minutes).
+  max_delay_min: 360
+  min_delay_min: -60
+
+models:
+  raildata:
+    staging:
+      +schema: staging
+      +materialized: view
+    intermediate:
+      +schema: intermediate
+      +materialized: table
+    quarantine:
+      +schema: quarantine
+      +materialized: table
+    marts:
+      +schema: marts
+      +materialized: table
+
+data_tests:
+  raildata:
+    +severity: error

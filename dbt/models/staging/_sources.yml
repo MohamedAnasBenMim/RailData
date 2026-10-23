@@ -1,0 +1,22 @@
+version: 2
+
+sources:
+  - name: bronze_gtfs
+    description: Static GTFS tables loaded by `raildata.gtfs.load_gtfs` (all columns as text).
+    meta:
+      external_location: "read_parquet('{{ env_var('RAILDATA_DATA_DIR', '../data') }}/bronze/gtfs/{name}.parquet')"
+    tables:
+      - name: agency
+      - name: stops
+      - name: routes
+      - name: trips
+      - name: stop_times
+      - name: calendar
+      - name: calendar_dates
+
+  - name: bronze_events
+    description: Realised stop events, one Hive partition per delivery (ingest) day.
+    tables:
+      - name: events
+        meta:
+          external_location: "read_parquet('{{ env_var('RAILDATA_DATA_DIR', '../data') }}/bronze/events/*/*.parquet', hive_partitioning = true)"

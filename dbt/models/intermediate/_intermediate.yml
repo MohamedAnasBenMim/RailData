@@ -1,0 +1,15 @@
+version: 2
+
+models:
+  - name: int_events_ranked
+    columns:
+      - name: dedup_reason
+        data_tests:
+          - accepted_values: {arguments: {values: ["duplicate_event", "superseded_version"]}}
+  - name: int_events_validated
+    columns:
+      - name: event_id
+        data_tests: [unique, not_null]
+  - name: int_scheduled_trips
+    data_tests:
+      - unique_combination: {arguments: {columns: [service_date, trip_id]}}

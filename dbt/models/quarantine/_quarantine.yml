@@ -1,0 +1,21 @@
+version: 2
+
+models:
+  - name: dq_quarantine_events
+    description: Rejected records with the reason. Kept for inspection / replay, never deleted.
+    columns:
+      - name: dq_reason
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - duplicate_event
+                  - superseded_version
+                  - unknown_stop_id
+                  - no_matching_stop_time
+                  - stop_mismatch
+                  - missing_actual_ts
+                  - cancelled_with_actual_ts
+                  - implausible_delay
+                  - out_of_order_timestamp

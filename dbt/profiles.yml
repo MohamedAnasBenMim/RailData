@@ -1,0 +1,7 @@
+raildata:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "{{ env_var('RAILDATA_DUCKDB', '../data/warehouse/raildata.duckdb') }}"
+      threads: 2
