@@ -1,0 +1,59 @@
+{
+  "window": [
+    "2026-03-02",
+    "2026-04-26"
+  ],
+  "landing_records_ingested": 243545,
+  "gtfs_rows": {
+    "agency": 2,
+    "stops": 43,
+    "routes": 9,
+    "trips": 806,
+    "stop_times": 4546,
+    "calendar": 2,
+    "calendar_dates": 0
+  },
+  "dbt_results": {
+    "model:success": 20,
+    "test:pass": 57
+  },
+  "timings_s": {
+    "gtfs_load": 0.05,
+    "generate_landing": 9.37,
+    "bronze_ingest": 0.74,
+    "dbt_build": 11.79,
+    "total": 21.95
+  },
+  "rows_per_layer": {
+    "bronze.events (stg_events view)": 243545,
+    "silver.int_events_validated (1 row per event_id)": 237760,
+    "gold.fct_stop_events": 235675,
+    "gold.fct_trip_runs": 25712,
+    "gold.mart_punctuality_line_daily": 504,
+    "gold.mart_punctuality_station": 43,
+    "gold.mart_punctuality_hourly": 45,
+    "gold.mart_delay_propagation": 102,
+    "quarantine.dq_quarantine_events": 7870
+  },
+  "quarantine_by_reason": {
+    "duplicate_event": 3471,
+    "superseded_version": 2314,
+    "out_of_order_timestamp": 685,
+    "unknown_stop_id": 685,
+    "missing_actual_ts": 476,
+    "implausible_delay": 239
+  },
+  "trip_runs_by_status": {
+    "RAN": 24953,
+    "CANCELLED": 491,
+    "PARTIALLY_CANCELLED": 268
+  },
+  "late_events_accepted": 4633,
+  "arrivals_on_time_pct": 88.85,
+  "arrivals_avg_delay_min": 1.71,
+  "arrivals_p90_delay_min": 5.68,
+  "service_date_range": [
+    "2026-03-01",
+    "2026-04-26"
+  ]
+}
